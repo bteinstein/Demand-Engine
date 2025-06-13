@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_73ee57075a32091bc97442f0420887a6 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.css"/>
+</head>
+<body>
+    
+    
+    <script>
+    // Wait for the map to be fully loaded
+    setTimeout(function() {
+        // Create a container for all custom controls
+        var controlContainer = document.createElement('div');
+        controlContainer.id = 'cluster-controls';
+        controlContainer.style.position = 'absolute';
+        controlContainer.style.top = '10px';
+        controlContainer.style.left = '60px';  // Offset from zoom controls
+        controlContainer.style.zIndex = '1000';
+        controlContainer.style.display = 'flex';
+        controlContainer.style.flexDirection = 'column';
+        controlContainer.style.gap = '5px';
+        
+        // Create unified control panel
+        var controlPanel = document.createElement('div');
+        controlPanel.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        controlPanel.style.border = '2px solid #ccc';
+        controlPanel.style.borderRadius = '8px';
+        controlPanel.style.padding = '10px';
+        controlPanel.style.fontSize = '12px';
+        controlPanel.style.fontFamily = 'Arial, sans-serif';
+        controlPanel.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+        controlPanel.style.backdropFilter = 'blur(5px)';
+        controlPanel.style.minWidth = '200px';
+        
+        // Add title
+        var title = document.createElement('div');
+        title.innerHTML = '<strong>Cluster Controls</strong>';
+        title.style.marginBottom = '10px';
+        title.style.textAlign = 'center';
+        title.style.color = '#333';
+        title.style.borderBottom = '1px solid #ddd';
+        title.style.paddingBottom = '5px';
+        controlPanel.appendChild(title);
+        
+        // Create button container
+        var buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '5px';
+        buttonContainer.style.marginBottom = '10px';
+        
+        // Create the unselect all button
+        var unselectButton = document.createElement('button');
+        unselectButton.innerHTML = 'Hide All';
+        unselectButton.style.flex = '1';
+        unselectButton.style.backgroundColor = '#f8f9fa';
+        unselectButton.style.border = '1px solid #dee2e6';
+        unselectButton.style.borderRadius = '4px';
+        unselectButton.style.padding = '6px 8px';
+        unselectButton.style.fontSize = '11px';
+        unselectButton.style.fontWeight = 'bold';
+        unselectButton.style.cursor = 'pointer';
+        unselectButton.style.transition = 'all 0.2s';
+        
+        // Create the select all button
+        var selectButton = document.createElement('button');
+        selectButton.innerHTML = 'Show All';
+        selectButton.style.flex = '1';
+        selectButton.style.backgroundColor = '#f8f9fa';
+        selectButton.style.border = '1px solid #dee2e6';
+        selectButton.style.borderRadius = '4px';
+        selectButton.style.padding = '6px 8px';
+        selectButton.style.fontSize = '11px';
+        selectButton.style.fontWeight = 'bold';
+        selectButton.style.cursor = 'pointer';
+        selectButton.style.transition = 'all 0.2s';
+        
+        // Add hover effects
+        [unselectButton, selectButton].forEach(function(btn) {
+            btn.onmouseover = function() {
+                this.style.backgroundColor = '#e9ecef';
+                this.style.transform = 'translateY(-1px)';
+            };
+            btn.onmouseout = function() {
+                this.style.backgroundColor = '#f8f9fa';
+                this.style.transform = 'translateY(0)';
+            };
+        });
+        
+        // Add click functionality for unselect all
+        unselectButton.onclick = function() {
+            var layerControls = document.querySelectorAll('.leaflet-control-layers-overlays input[type="checkbox"]');
+            var uncheckedCount = 0;
+            
+            layerControls.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    checkbox.click();
+                    uncheckedCount++;
+                }
+            });
+            
+            showFeedback(unselectButton, uncheckedCount > 0 ? 
+                'Hidden ' + uncheckedCount + ' clusters' : 'No clusters visible', 
+                uncheckedCount > 0 ? '#d1ecf1' : '#f8d7da');
+        };
+        
+        // Add click functionality for select all
+        selectButton.onclick = function() {
+            var layerControls = document.querySelectorAll('.leaflet-control-layers-overlays input[type="checkbox"]');
+            var checkedCount = 0;
+            
+            layerControls.forEach(function(checkbox) {
+                if (!checkbox.checked) {
+                    checkbox.click();
+                    checkedCount++;
+                }
+            });
+            
+            showFeedback(selectButton, checkedCount > 0 ? 
+                'Shown ' + checkedCount + ' clusters' : 'All clusters visible', 
+                checkedCount > 0 ? '#d4edda' : '#d1ecf1');
+        };
+        
+        // Feedback function
+        function showFeedback(button, message, color) {
+            var originalText = button.innerHTML;
+            var originalColor = button.style.backgroundColor;
+            button.innerHTML = message;
+            button.style.backgroundColor = color;
+            setTimeout(function() {
+                button.innerHTML = originalText;
+                button.style.backgroundColor = originalColor;
+            }, 2000);
+        }
+        
+        // Add cluster summary
+        var summaryDiv = document.createElement('div');
+        summaryDiv.style.fontSize = '10px';
+        summaryDiv.style.color = '#666';
+        summaryDiv.style.textAlign = 'center';
+        summaryDiv.style.marginTop = '5px';
+        summaryDiv.innerHTML = 'Total: 3 clusters | 59 points';
+        
+        // Assemble the control panel
+        buttonContainer.appendChild(unselectButton);
+        buttonContainer.appendChild(selectButton);
+        controlPanel.appendChild(buttonContainer);
+        controlPanel.appendChild(summaryDiv);
+        controlContainer.appendChild(controlPanel);
+        
+        // Add minimize/maximize functionality
+        var toggleButton = document.createElement('button');
+        toggleButton.innerHTML = '−';
+        toggleButton.style.position = 'absolute';
+        toggleButton.style.top = '5px';
+        toggleButton.style.right = '5px';
+        toggleButton.style.width = '20px';
+        toggleButton.style.height = '20px';
+        toggleButton.style.border = 'none';
+        toggleButton.style.backgroundColor = 'transparent';
+        toggleButton.style.cursor = 'pointer';
+        toggleButton.style.fontSize = '14px';
+        toggleButton.style.fontWeight = 'bold';
+        toggleButton.style.color = '#666';
+        
+        var isMinimized = false;
+        toggleButton.onclick = function() {
+            if (isMinimized) {
+                buttonContainer.style.display = 'flex';
+                summaryDiv.style.display = 'block';
+                toggleButton.innerHTML = '−';
+                isMinimized = false;
+            } else {
+                buttonContainer.style.display = 'none';
+                summaryDiv.style.display = 'none';
+                toggleButton.innerHTML = '+';
+                isMinimized = true;
+            }
+        };
+        
+        controlPanel.appendChild(toggleButton);
+        
+        // Add the control container to the map
+        document.body.appendChild(controlContainer);
+        
+    }, 1000);
+    </script>
+    
+    
+    <div id="cluster-legend" style="position: fixed; 
+                bottom: 120px; right: 10px; width: 250px; height: auto; 
+                background-color: rgba(255, 255, 255, 0.95); 
+                border: 2px solid #ccc; z-index: 999; 
+                font-size: 11px; padding: 12px; border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                backdrop-filter: blur(5px);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <strong style="color: #333;">Cluster Legend</strong>
+        <button onclick="toggleLegend()" style="border: none; background: none; cursor: pointer; font-size: 14px; color: #666;">−</button>
+    </div>
+    <div style="font-size: 9px; color: #666; margin-bottom: 8px;">
+        3 clusters | Sorted by size | Showing top 15
+    </div>
+    <div id="legend-content" style="max-height: 180px; overflow-y: auto;">
+    
+        <div style="margin: 3px 0; display: flex; align-items: center; padding: 2px;">
+            <span style="display: inline-block; width: 14px; height: 14px; 
+                         background-color: #1f77b4; border-radius: 50%; 
+                         margin-right: 8px; border: 1px solid white; 
+                         box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>
+            <span style="font-size: 10px; flex: 1;">
+                <strong>#1</strong> Cluster 26 
+                <br><span style="color: #666; font-size: 9px;">20 points</span>
+            </span>
+        </div>
+        
+        <div style="margin: 3px 0; display: flex; align-items: center; padding: 2px;">
+            <span style="display: inline-block; width: 14px; height: 14px; 
+                         background-color: #2ca02c; border-radius: 50%; 
+                         margin-right: 8px; border: 1px solid white; 
+                         box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>
+            <span style="font-size: 10px; flex: 1;">
+                <strong>#2</strong> Cluster 38 
+                <br><span style="color: #666; font-size: 9px;">20 points</span>
+            </span>
+        </div>
+        
+        <div style="margin: 3px 0; display: flex; align-items: center; padding: 2px;">
+            <span style="display: inline-block; width: 14px; height: 14px; 
+                         background-color: #ff7f0e; border-radius: 50%; 
+                         margin-right: 8px; border: 1px solid white; 
+                         box-shadow: 0 1px 2px rgba(0,0,0,0.2);"></span>
+            <span style="font-size: 10px; flex: 1;">
+                <strong>#3</strong> Cluster 33 
+                <br><span style="color: #666; font-size: 9px;">19 points</span>
+            </span>
+        </div>
+        
+    </div>
+    <script>
+    function toggleLegend() {
+        var content = document.getElementById('legend-content');
+        var button = document.querySelector('#cluster-legend button');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            button.innerHTML = '−';
+        } else {
+            content.style.display = 'none';
+            button.innerHTML = '+';
+        }
+    }
+    </script>
+    </div>
+    
+    
+            <div class="folium-map" id="map_73ee57075a32091bc97442f0420887a6" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_73ee57075a32091bc97442f0420887a6 = L.map(
+                "map_73ee57075a32091bc97442f0420887a6",
+                {
+                    center: [6.49543215, 3.3472533],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_73ee57075a32091bc97442f0420887a6);
+
+            
+
+        
+    
+            var tile_layer_c88878307a59925d597b808aceaa86d4 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_c88878307a59925d597b808aceaa86d4.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var tile_layer_d7a5c315642c897549d2f584bfdf74eb = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_d7a5c315642c897549d2f584bfdf74eb.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var tile_layer_8c46d48de906b1cd2e390f47bf0607fe = L.tileLayer(
+                "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Map tiles by \u003ca href=\"http://stamen.com\"\u003eStamen Design\u003c/a\u003e, \u003ca href=\"http://creativecommons.org/licenses/by/3.0\"\u003eCC BY 3.0\u003c/a\u003e \u0026mdash; Map data \u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_8c46d48de906b1cd2e390f47bf0607fe.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var tile_layer_237b362e202dea6ad916b6a1ebf58150 = L.tileLayer(
+                "https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "Map tiles by \u003ca href=\"http://stamen.com\"\u003eStamen Design\u003c/a\u003e, \u003ca href=\"http://creativecommons.org/licenses/by/3.0\"\u003eCC BY 3.0\u003c/a\u003e \u0026mdash; Map data \u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_237b362e202dea6ad916b6a1ebf58150.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var tile_layer_21ac88ad543039d755bdd1ff726bead3 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_21ac88ad543039d755bdd1ff726bead3.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var tile_layer_7945acdf60fc51949d2c0660c0006d20 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_7945acdf60fc51949d2c0660c0006d20.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var feature_group_c723e45a235bc69448f4050baede5a71 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_9dd493851ada79b0382a2cf5e2772e64 = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_770238dbde3786636d6e4cc7cac13514 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_529d5ad250a38cbac5ce6ff09a7d8b68 = $(`<div id="html_529d5ad250a38cbac5ce6ff09a7d8b68" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1796724&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_770238dbde3786636d6e4cc7cac13514.setContent(html_529d5ad250a38cbac5ce6ff09a7d8b68);
+            
+        
+
+        circle_marker_9dd493851ada79b0382a2cf5e2772e64.bindPopup(popup_770238dbde3786636d6e4cc7cac13514)
+        ;
+
+        
+    
+    
+            circle_marker_9dd493851ada79b0382a2cf5e2772e64.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2081e27f59d9a3f9fcc5d4253c22ab3e = L.circleMarker(
+                [6.4748620999999, 3.3478847],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_b4d1509e7cdfbb675e632b4d84d6fbcd = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_c4ac695ccf0a428d6d9765ac7eb1472f = $(`<div id="html_c4ac695ccf0a428d6d9765ac7eb1472f" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1823160&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4749, 3.3479&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_b4d1509e7cdfbb675e632b4d84d6fbcd.setContent(html_c4ac695ccf0a428d6d9765ac7eb1472f);
+            
+        
+
+        circle_marker_2081e27f59d9a3f9fcc5d4253c22ab3e.bindPopup(popup_b4d1509e7cdfbb675e632b4d84d6fbcd)
+        ;
+
+        
+    
+    
+            circle_marker_2081e27f59d9a3f9fcc5d4253c22ab3e.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_98fe5585c68ebe9c57240cecc09208a5 = L.circleMarker(
+                [6.4726082, 3.3517484],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_0f496dcfb16690949f6fc536d7091cbd = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0f05a61e4da478d2ff46dd56404444c6 = $(`<div id="html_0f05a61e4da478d2ff46dd56404444c6" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1844856&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4726, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_0f496dcfb16690949f6fc536d7091cbd.setContent(html_0f05a61e4da478d2ff46dd56404444c6);
+            
+        
+
+        circle_marker_98fe5585c68ebe9c57240cecc09208a5.bindPopup(popup_0f496dcfb16690949f6fc536d7091cbd)
+        ;
+
+        
+    
+    
+            circle_marker_98fe5585c68ebe9c57240cecc09208a5.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c16905f1e55b3f722733b341a4af32d9 = L.circleMarker(
+                [6.474842799999999, 3.3478811],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_bc1851882871450faaf19d6bc221de42 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b34d3b40bf97fcc9eff20a912295c74f = $(`<div id="html_b34d3b40bf97fcc9eff20a912295c74f" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2774240&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4748, 3.3479&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_bc1851882871450faaf19d6bc221de42.setContent(html_b34d3b40bf97fcc9eff20a912295c74f);
+            
+        
+
+        circle_marker_c16905f1e55b3f722733b341a4af32d9.bindPopup(popup_bc1851882871450faaf19d6bc221de42)
+        ;
+
+        
+    
+    
+            circle_marker_c16905f1e55b3f722733b341a4af32d9.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f8bfca2515665416ce84509941be1096 = L.circleMarker(
+                [6.4708945, 3.3505777],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_85d90bae04d6b86939319394d34f0281 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d9b89a00fe86998213af00eb4474788a = $(`<div id="html_d9b89a00fe86998213af00eb4474788a" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2970407&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Amukoko&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4709, 3.3506&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Amukoko&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_85d90bae04d6b86939319394d34f0281.setContent(html_d9b89a00fe86998213af00eb4474788a);
+            
+        
+
+        circle_marker_f8bfca2515665416ce84509941be1096.bindPopup(popup_85d90bae04d6b86939319394d34f0281)
+        ;
+
+        
+    
+    
+            circle_marker_f8bfca2515665416ce84509941be1096.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Amukoko (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d9fb3243c574a368c524afd3ff06ff4f = L.circleMarker(
+                [6.4722087, 3.3517907],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_2d06372fe4dcfad9999185aedd97c98c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_9f881a19418ce4e60d82e98387f7b631 = $(`<div id="html_9f881a19418ce4e60d82e98387f7b631" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3047629&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4722, 3.3518&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_2d06372fe4dcfad9999185aedd97c98c.setContent(html_9f881a19418ce4e60d82e98387f7b631);
+            
+        
+
+        circle_marker_d9fb3243c574a368c524afd3ff06ff4f.bindPopup(popup_2d06372fe4dcfad9999185aedd97c98c)
+        ;
+
+        
+    
+    
+            circle_marker_d9fb3243c574a368c524afd3ff06ff4f.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8e2d534091908f16b3cf87b5038bba5b = L.circleMarker(
+                [6.4756789, 3.3503276],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_80c81c698de545c51e855f731cf0c331 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d79485a75e25add7f1a7ff4eea8b9d16 = $(`<div id="html_d79485a75e25add7f1a7ff4eea8b9d16" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4015450&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4757, 3.3503&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_80c81c698de545c51e855f731cf0c331.setContent(html_d79485a75e25add7f1a7ff4eea8b9d16);
+            
+        
+
+        circle_marker_8e2d534091908f16b3cf87b5038bba5b.bindPopup(popup_80c81c698de545c51e855f731cf0c331)
+        ;
+
+        
+    
+    
+            circle_marker_8e2d534091908f16b3cf87b5038bba5b.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f63622dd5473c56ea69631f08e3f93ec = L.circleMarker(
+                [6.4766435, 3.351849],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_9700147ecde407bd013d4b9aeb1f075b = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6fce45b08b1443eba8cdd5ea1dacf030 = $(`<div id="html_6fce45b08b1443eba8cdd5ea1dacf030" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5223182&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4766, 3.3518&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_9700147ecde407bd013d4b9aeb1f075b.setContent(html_6fce45b08b1443eba8cdd5ea1dacf030);
+            
+        
+
+        circle_marker_f63622dd5473c56ea69631f08e3f93ec.bindPopup(popup_9700147ecde407bd013d4b9aeb1f075b)
+        ;
+
+        
+    
+    
+            circle_marker_f63622dd5473c56ea69631f08e3f93ec.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9982ce5781477fd57c6177477559b130 = L.circleMarker(
+                [6.4761066, 3.3529281],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_7a04e975b8f2916fcc19b072a3676ff6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4836b408ffa071622cc887b0b61da20c = $(`<div id="html_4836b408ffa071622cc887b0b61da20c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4291801&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4761, 3.3529&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_7a04e975b8f2916fcc19b072a3676ff6.setContent(html_4836b408ffa071622cc887b0b61da20c);
+            
+        
+
+        circle_marker_9982ce5781477fd57c6177477559b130.bindPopup(popup_7a04e975b8f2916fcc19b072a3676ff6)
+        ;
+
+        
+    
+    
+            circle_marker_9982ce5781477fd57c6177477559b130.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Aguda (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8e5c37ba7c99c312e8b7c474997e9d24 = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_4747ec635e8409d2e19f43449fd3517c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_32f3b8ca12b48d240b2bf3c961cc7dd9 = $(`<div id="html_32f3b8ca12b48d240b2bf3c961cc7dd9" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3827482&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_4747ec635e8409d2e19f43449fd3517c.setContent(html_32f3b8ca12b48d240b2bf3c961cc7dd9);
+            
+        
+
+        circle_marker_8e5c37ba7c99c312e8b7c474997e9d24.bindPopup(popup_4747ec635e8409d2e19f43449fd3517c)
+        ;
+
+        
+    
+    
+            circle_marker_8e5c37ba7c99c312e8b7c474997e9d24.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5b118f1d7457d12942bf31f94b567d22 = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_8def7c6093075cedc1107daf86b41d1b = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_899041108a42577a8a3f8c5ea53f9cf5 = $(`<div id="html_899041108a42577a8a3f8c5ea53f9cf5" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5277436&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_8def7c6093075cedc1107daf86b41d1b.setContent(html_899041108a42577a8a3f8c5ea53f9cf5);
+            
+        
+
+        circle_marker_5b118f1d7457d12942bf31f94b567d22.bindPopup(popup_8def7c6093075cedc1107daf86b41d1b)
+        ;
+
+        
+    
+    
+            circle_marker_5b118f1d7457d12942bf31f94b567d22.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8ed246cc6d68da1f56279f9ecfb9c74d = L.circleMarker(
+                [6.4739515999999, 3.3501528],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_a33d6ce3182a61a7649c195a079a97e6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d2eadd28095253b2827dc0062f519b9c = $(`<div id="html_d2eadd28095253b2827dc0062f519b9c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5281308&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4740, 3.3502&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_a33d6ce3182a61a7649c195a079a97e6.setContent(html_d2eadd28095253b2827dc0062f519b9c);
+            
+        
+
+        circle_marker_8ed246cc6d68da1f56279f9ecfb9c74d.bindPopup(popup_a33d6ce3182a61a7649c195a079a97e6)
+        ;
+
+        
+    
+    
+            circle_marker_8ed246cc6d68da1f56279f9ecfb9c74d.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d7c45c5489fbef673c6c7f06e6b69ee1 = L.circleMarker(
+                [6.4741051, 3.3472681],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_6b0fc170d4ddef77e98dce0bb2577939 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_9b1389b10a6ab25f1de4833c5cb70117 = $(`<div id="html_9b1389b10a6ab25f1de4833c5cb70117" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5290717&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4741, 3.3473&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_6b0fc170d4ddef77e98dce0bb2577939.setContent(html_9b1389b10a6ab25f1de4833c5cb70117);
+            
+        
+
+        circle_marker_d7c45c5489fbef673c6c7f06e6b69ee1.bindPopup(popup_6b0fc170d4ddef77e98dce0bb2577939)
+        ;
+
+        
+    
+    
+            circle_marker_d7c45c5489fbef673c6c7f06e6b69ee1.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d6d660109649369c48f7d8f30edbaacf = L.circleMarker(
+                [6.4755309, 3.3525481],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_f3bd7d6979cc53a31f5a732935281740 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6442dac7e4af2b267d3a3b49c88b8664 = $(`<div id="html_6442dac7e4af2b267d3a3b49c88b8664" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4500919&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Suru-alaba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4755, 3.3525&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Suru-alaba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_f3bd7d6979cc53a31f5a732935281740.setContent(html_6442dac7e4af2b267d3a3b49c88b8664);
+            
+        
+
+        circle_marker_d6d660109649369c48f7d8f30edbaacf.bindPopup(popup_f3bd7d6979cc53a31f5a732935281740)
+        ;
+
+        
+    
+    
+            circle_marker_d6d660109649369c48f7d8f30edbaacf.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Suru-alaba (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5f3ec37935401b6c081aa73b52c5f502 = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_62669e6ddba9ce6295b13495ae30c2e6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_8e1e3e7b4fa97e357166c9545ef77dff = $(`<div id="html_8e1e3e7b4fa97e357166c9545ef77dff" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4922754&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_62669e6ddba9ce6295b13495ae30c2e6.setContent(html_8e1e3e7b4fa97e357166c9545ef77dff);
+            
+        
+
+        circle_marker_5f3ec37935401b6c081aa73b52c5f502.bindPopup(popup_62669e6ddba9ce6295b13495ae30c2e6)
+        ;
+
+        
+    
+    
+            circle_marker_5f3ec37935401b6c081aa73b52c5f502.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d90339555c66baaaf98245a44b206766 = L.circleMarker(
+                [6.4755117, 3.3475482],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_30074fbb12029e32860c7e6539685e61 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_82d5155abd18427a2515ba7b525d85d4 = $(`<div id="html_82d5155abd18427a2515ba7b525d85d4" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5258688&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4755, 3.3475&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Apapa&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Apapa - Sari-iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_30074fbb12029e32860c7e6539685e61.setContent(html_82d5155abd18427a2515ba7b525d85d4);
+            
+        
+
+        circle_marker_d90339555c66baaaf98245a44b206766.bindPopup(popup_30074fbb12029e32860c7e6539685e61)
+        ;
+
+        
+    
+    
+            circle_marker_d90339555c66baaaf98245a44b206766.bindTooltip(
+                `<div>
+                     Apapa | Apapa - Sari-iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2a632b5623f795e9679e724f3b97862a = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_18c0c56c916d2fff5728f9a070550b9f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d017cafb1d24c66870015047603be5c9 = $(`<div id="html_d017cafb1d24c66870015047603be5c9" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5261477&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_18c0c56c916d2fff5728f9a070550b9f.setContent(html_d017cafb1d24c66870015047603be5c9);
+            
+        
+
+        circle_marker_2a632b5623f795e9679e724f3b97862a.bindPopup(popup_18c0c56c916d2fff5728f9a070550b9f)
+        ;
+
+        
+    
+    
+            circle_marker_2a632b5623f795e9679e724f3b97862a.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a9151f1514f0454abe9c9e8fd34abc31 = L.circleMarker(
+                [6.4715698, 3.3516576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_6dd3b60a59e68b38f1db8f0a6e2068c0 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4d154d1642b4a3a3cce81511b569d023 = $(`<div id="html_4d154d1642b4a3a3cce81511b569d023" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5143452&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4716, 3.3517&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_6dd3b60a59e68b38f1db8f0a6e2068c0.setContent(html_4d154d1642b4a3a3cce81511b569d023);
+            
+        
+
+        circle_marker_a9151f1514f0454abe9c9e8fd34abc31.bindPopup(popup_6dd3b60a59e68b38f1db8f0a6e2068c0)
+        ;
+
+        
+    
+    
+            circle_marker_a9151f1514f0454abe9c9e8fd34abc31.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c0a1efd6f66383eeba0803a932dab416 = L.circleMarker(
+                [6.4713201, 3.3484516],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_3cd46f16b12537c21c01f7a054811c17 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_88ffc1ebaf6648eacfee0d764bd11cda = $(`<div id="html_88ffc1ebaf6648eacfee0d764bd11cda" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5144208&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Orile Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4713, 3.3485&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Orile Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_3cd46f16b12537c21c01f7a054811c17.setContent(html_88ffc1ebaf6648eacfee0d764bd11cda);
+            
+        
+
+        circle_marker_c0a1efd6f66383eeba0803a932dab416.bindPopup(popup_3cd46f16b12537c21c01f7a054811c17)
+        ;
+
+        
+    
+    
+            circle_marker_c0a1efd6f66383eeba0803a932dab416.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Orile Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b24965e34e386f763d129e1bf60e4f22 = L.circleMarker(
+                [6.4767103, 3.3500743],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#1f77b4", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_c723e45a235bc69448f4050baede5a71);
+        
+    
+        var popup_f409983b2b69ede0055f9dc4ab09c989 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d273df0f111cef2c307c67a121d99777 = $(`<div id="html_d273df0f111cef2c307c67a121d99777" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #1f77b4; margin-bottom: 5px;&#39;&gt;Cluster 26&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5296391&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4767, 3.3501&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Ajeromi Ifelodun&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Ajeromi Ifelodun - Sari Iganmu&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_f409983b2b69ede0055f9dc4ab09c989.setContent(html_d273df0f111cef2c307c67a121d99777);
+            
+        
+
+        circle_marker_b24965e34e386f763d129e1bf60e4f22.bindPopup(popup_f409983b2b69ede0055f9dc4ab09c989)
+        ;
+
+        
+    
+    
+            circle_marker_b24965e34e386f763d129e1bf60e4f22.bindTooltip(
+                `<div>
+                     Ajeromi Ifelodun | Ajeromi Ifelodun - Sari Iganmu (Cluster 26)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_c723e45a235bc69448f4050baede5a71.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var feature_group_78c488331be9bc4bf3c76d76baedb319 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_864187d00db4513520556cd1433705cf = L.circleMarker(
+                [6.510810999999999, 3.3606008],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_64aee241bb5aabc546d714ce696822aa = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_20f0628e04f384b718e2cbf5d7df2f95 = $(`<div id="html_20f0628e04f384b718e2cbf5d7df2f95" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1878283&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5108, 3.3606&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_64aee241bb5aabc546d714ce696822aa.setContent(html_20f0628e04f384b718e2cbf5d7df2f95);
+            
+        
+
+        circle_marker_864187d00db4513520556cd1433705cf.bindPopup(popup_64aee241bb5aabc546d714ce696822aa)
+        ;
+
+        
+    
+    
+            circle_marker_864187d00db4513520556cd1433705cf.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_28284b0ff431479ef9aa64c6eb002abf = L.circleMarker(
+                [6.5077289, 3.3669938],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_9f08ee3d7520da121f424ef125fcd3e1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b2653a3038caa7c02efe0e33e5c2e33c = $(`<div id="html_b2653a3038caa7c02efe0e33e5c2e33c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2087855&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5077, 3.3670&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_9f08ee3d7520da121f424ef125fcd3e1.setContent(html_b2653a3038caa7c02efe0e33e5c2e33c);
+            
+        
+
+        circle_marker_28284b0ff431479ef9aa64c6eb002abf.bindPopup(popup_9f08ee3d7520da121f424ef125fcd3e1)
+        ;
+
+        
+    
+    
+            circle_marker_28284b0ff431479ef9aa64c6eb002abf.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8bad61c0db91bbe1769537aa432e2605 = L.circleMarker(
+                [6.5096188, 3.3664623],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_20ac012bb107aa5a7984d87e27b62184 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_7b4cb0883503049db98bd673f2f52645 = $(`<div id="html_7b4cb0883503049db98bd673f2f52645" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2502546&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5096, 3.3665&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_20ac012bb107aa5a7984d87e27b62184.setContent(html_7b4cb0883503049db98bd673f2f52645);
+            
+        
+
+        circle_marker_8bad61c0db91bbe1769537aa432e2605.bindPopup(popup_20ac012bb107aa5a7984d87e27b62184)
+        ;
+
+        
+    
+    
+            circle_marker_8bad61c0db91bbe1769537aa432e2605.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_cc4701dd0e1c27b5523d60f0df824d30 = L.circleMarker(
+                [6.5082437, 3.3667253],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_0d49c723d0a19ca5fe85985a6b15cfe7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_daaf108d9095d311c8e0f09d280f968d = $(`<div id="html_daaf108d9095d311c8e0f09d280f968d" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2669508&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5082, 3.3667&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_0d49c723d0a19ca5fe85985a6b15cfe7.setContent(html_daaf108d9095d311c8e0f09d280f968d);
+            
+        
+
+        circle_marker_cc4701dd0e1c27b5523d60f0df824d30.bindPopup(popup_0d49c723d0a19ca5fe85985a6b15cfe7)
+        ;
+
+        
+    
+    
+            circle_marker_cc4701dd0e1c27b5523d60f0df824d30.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f04fa01a49c3accf550dc5022f108662 = L.circleMarker(
+                [6.5091557, 3.3626324],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_5e9ddfd68a7ae6c93bc9ac155041b6f0 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_208811e8e920bfe550e41239272ab6ff = $(`<div id="html_208811e8e920bfe550e41239272ab6ff" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3043964&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5092, 3.3626&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_5e9ddfd68a7ae6c93bc9ac155041b6f0.setContent(html_208811e8e920bfe550e41239272ab6ff);
+            
+        
+
+        circle_marker_f04fa01a49c3accf550dc5022f108662.bindPopup(popup_5e9ddfd68a7ae6c93bc9ac155041b6f0)
+        ;
+
+        
+    
+    
+            circle_marker_f04fa01a49c3accf550dc5022f108662.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_68b8125997d7a53ff51033f71b37478f = L.circleMarker(
+                [6.5079207186366, 3.3665952093355],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_123f00646804d6ce7e60bb80e1f76cc4 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_92c4f33b42507e37cac9eda2fd6e9704 = $(`<div id="html_92c4f33b42507e37cac9eda2fd6e9704" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4331522&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5079, 3.3666&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_123f00646804d6ce7e60bb80e1f76cc4.setContent(html_92c4f33b42507e37cac9eda2fd6e9704);
+            
+        
+
+        circle_marker_68b8125997d7a53ff51033f71b37478f.bindPopup(popup_123f00646804d6ce7e60bb80e1f76cc4)
+        ;
+
+        
+    
+    
+            circle_marker_68b8125997d7a53ff51033f71b37478f.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_206c8bef54e67a590c808cc65b2ef3db = L.circleMarker(
+                [6.5060145, 3.3627313],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_7bd37e9fe6471647372dce424c942fb2 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b3bc43d3120c4a2183ebb7ebd789e0eb = $(`<div id="html_b3bc43d3120c4a2183ebb7ebd789e0eb" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5274465&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5060, 3.3627&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_7bd37e9fe6471647372dce424c942fb2.setContent(html_b3bc43d3120c4a2183ebb7ebd789e0eb);
+            
+        
+
+        circle_marker_206c8bef54e67a590c808cc65b2ef3db.bindPopup(popup_7bd37e9fe6471647372dce424c942fb2)
+        ;
+
+        
+    
+    
+            circle_marker_206c8bef54e67a590c808cc65b2ef3db.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Itire (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a0e6d7b32ceabfccc0c7077324e6c18d = L.circleMarker(
+                [6.5199698, 3.3657547],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_ff1980328d648eb18caab8a778b1b18f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_abf05439362dc573371699b9c6ff9876 = $(`<div id="html_abf05439362dc573371699b9c6ff9876" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5325112&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi - Araba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5200, 3.3658&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi - Araba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_ff1980328d648eb18caab8a778b1b18f.setContent(html_abf05439362dc573371699b9c6ff9876);
+            
+        
+
+        circle_marker_a0e6d7b32ceabfccc0c7077324e6c18d.bindPopup(popup_ff1980328d648eb18caab8a778b1b18f)
+        ;
+
+        
+    
+    
+            circle_marker_a0e6d7b32ceabfccc0c7077324e6c18d.bindTooltip(
+                `<div>
+                     Mushin | Mushin - Idi - Araba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c6a9e881d885340fc6f9b50f90b0c0e2 = L.circleMarker(
+                [6.5060033, 3.3627361],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_52f57bef95aeb9a384f8e3f62b7ae9ae = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_e3472095a1f676ecc9b4812dcba2f79d = $(`<div id="html_e3472095a1f676ecc9b4812dcba2f79d" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3906037&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5060, 3.3627&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_52f57bef95aeb9a384f8e3f62b7ae9ae.setContent(html_e3472095a1f676ecc9b4812dcba2f79d);
+            
+        
+
+        circle_marker_c6a9e881d885340fc6f9b50f90b0c0e2.bindPopup(popup_52f57bef95aeb9a384f8e3f62b7ae9ae)
+        ;
+
+        
+    
+    
+            circle_marker_c6a9e881d885340fc6f9b50f90b0c0e2.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Itire (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d107df3668b2fe217048dc7ed1cc79c4 = L.circleMarker(
+                [6.5069248, 3.3662066],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_15361f548a9076c617371843b4aed8d8 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_2704350828fbd6e82c0733ae9b9c3147 = $(`<div id="html_2704350828fbd6e82c0733ae9b9c3147" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4518095&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5069, 3.3662&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_15361f548a9076c617371843b4aed8d8.setContent(html_2704350828fbd6e82c0733ae9b9c3147);
+            
+        
+
+        circle_marker_d107df3668b2fe217048dc7ed1cc79c4.bindPopup(popup_15361f548a9076c617371843b4aed8d8)
+        ;
+
+        
+    
+    
+            circle_marker_d107df3668b2fe217048dc7ed1cc79c4.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b680d1063fc32e9218b2a8f204b8d25e = L.circleMarker(
+                [6.5198827, 3.3628576],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_801d768d3479b0533d3975f6512cccbd = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_00c98202630e8c24b5099beb1fdb9734 = $(`<div id="html_00c98202630e8c24b5099beb1fdb9734" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5127173&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi Oro&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5199, 3.3629&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi Oro&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_801d768d3479b0533d3975f6512cccbd.setContent(html_00c98202630e8c24b5099beb1fdb9734);
+            
+        
+
+        circle_marker_b680d1063fc32e9218b2a8f204b8d25e.bindPopup(popup_801d768d3479b0533d3975f6512cccbd)
+        ;
+
+        
+    
+    
+            circle_marker_b680d1063fc32e9218b2a8f204b8d25e.bindTooltip(
+                `<div>
+                     Mushin | Mushin - Idi Oro (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_40c8c2738a7317038503b6093c012c18 = L.circleMarker(
+                [6.5074478, 3.3675238],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_61c3c137e7fb8ce6aa130f81c181feb7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_8e36f986747d2baa61e0319d21778fb2 = $(`<div id="html_8e36f986747d2baa61e0319d21778fb2" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5258797&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5074, 3.3675&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_61c3c137e7fb8ce6aa130f81c181feb7.setContent(html_8e36f986747d2baa61e0319d21778fb2);
+            
+        
+
+        circle_marker_40c8c2738a7317038503b6093c012c18.bindPopup(popup_61c3c137e7fb8ce6aa130f81c181feb7)
+        ;
+
+        
+    
+    
+            circle_marker_40c8c2738a7317038503b6093c012c18.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_bb44cd2b742f2c079a29f56704ed7e5c = L.circleMarker(
+                [6.5090292, 3.3624319],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_a50c9e60f64d5584cade1e85471de5b8 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_35c24dfde6cb15945e0323ac91fa9143 = $(`<div id="html_35c24dfde6cb15945e0323ac91fa9143" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5261052&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5090, 3.3624&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_a50c9e60f64d5584cade1e85471de5b8.setContent(html_35c24dfde6cb15945e0323ac91fa9143);
+            
+        
+
+        circle_marker_bb44cd2b742f2c079a29f56704ed7e5c.bindPopup(popup_a50c9e60f64d5584cade1e85471de5b8)
+        ;
+
+        
+    
+    
+            circle_marker_bb44cd2b742f2c079a29f56704ed7e5c.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6fa3df525fb89a75aa2d6069b04726af = L.circleMarker(
+                [6.5118485, 3.3610893],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_cd15bd05bac91f78ea4c9b237b08ee09 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ee005b14d8a874f4704065e4dd05864b = $(`<div id="html_ee005b14d8a874f4704065e4dd05864b" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5316206&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5118, 3.3611&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_cd15bd05bac91f78ea4c9b237b08ee09.setContent(html_ee005b14d8a874f4704065e4dd05864b);
+            
+        
+
+        circle_marker_6fa3df525fb89a75aa2d6069b04726af.bindPopup(popup_cd15bd05bac91f78ea4c9b237b08ee09)
+        ;
+
+        
+    
+    
+            circle_marker_6fa3df525fb89a75aa2d6069b04726af.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_98390efcc3c88fff015aa76cca6e2fbb = L.circleMarker(
+                [6.5089448, 3.359012],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_c4796c644b2cb2e5193986d15e0cd46d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ca1e5a19ba40657993ec4007369c8143 = $(`<div id="html_ca1e5a19ba40657993ec4007369c8143" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5344647&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5089, 3.3590&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_c4796c644b2cb2e5193986d15e0cd46d.setContent(html_ca1e5a19ba40657993ec4007369c8143);
+            
+        
+
+        circle_marker_98390efcc3c88fff015aa76cca6e2fbb.bindPopup(popup_c4796c644b2cb2e5193986d15e0cd46d)
+        ;
+
+        
+    
+    
+            circle_marker_98390efcc3c88fff015aa76cca6e2fbb.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_983dfc08ce87f2ccf8f105d7fad7f7e4 = L.circleMarker(
+                [6.510810999999999, 3.3606008],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_fa6565a5a7a7d0110a2d8146427adeca = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_8b1e079a297803c2683185bb118cf194 = $(`<div id="html_8b1e079a297803c2683185bb118cf194" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5346887&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5108, 3.3606&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_fa6565a5a7a7d0110a2d8146427adeca.setContent(html_8b1e079a297803c2683185bb118cf194);
+            
+        
+
+        circle_marker_983dfc08ce87f2ccf8f105d7fad7f7e4.bindPopup(popup_fa6565a5a7a7d0110a2d8146427adeca)
+        ;
+
+        
+    
+    
+            circle_marker_983dfc08ce87f2ccf8f105d7fad7f7e4.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b1cf0f5fbaa424e28674f392a1edbd07 = L.circleMarker(
+                [6.5178645, 3.3577848],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_d5f4ef9f52de0035dee1c0bb7ee035d6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b94a17fc70759ce924380de21347f6b2 = $(`<div id="html_b94a17fc70759ce924380de21347f6b2" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5151687&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi - Araba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5179, 3.3578&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Mushin&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Mushin - Idi - Araba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_d5f4ef9f52de0035dee1c0bb7ee035d6.setContent(html_b94a17fc70759ce924380de21347f6b2);
+            
+        
+
+        circle_marker_b1cf0f5fbaa424e28674f392a1edbd07.bindPopup(popup_d5f4ef9f52de0035dee1c0bb7ee035d6)
+        ;
+
+        
+    
+    
+            circle_marker_b1cf0f5fbaa424e28674f392a1edbd07.bindTooltip(
+                `<div>
+                     Mushin | Mushin - Idi - Araba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9c00ba008d8cb390c011a26eed226577 = L.circleMarker(
+                [6.5111496, 3.366604],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_e19b16a799125984e38223adc739b4d9 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_dd2751a227e5fcd54276bef2bca67667 = $(`<div id="html_dd2751a227e5fcd54276bef2bca67667" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5295933&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5111, 3.3666&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_e19b16a799125984e38223adc739b4d9.setContent(html_dd2751a227e5fcd54276bef2bca67667);
+            
+        
+
+        circle_marker_9c00ba008d8cb390c011a26eed226577.bindPopup(popup_e19b16a799125984e38223adc739b4d9)
+        ;
+
+        
+    
+    
+            circle_marker_9c00ba008d8cb390c011a26eed226577.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ebddb1b4f83b8d8ae78dd0c8ef590fa1 = L.circleMarker(
+                [6.5138460999999, 3.3535198],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_5487017fb600f07e19cd5bbf43034591 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4aaf6a34b407192b97cf8b0f90b84d81 = $(`<div id="html_4aaf6a34b407192b97cf8b0f90b84d81" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5296594&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Fatia Shitta&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5138, 3.3535&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Fatia Shitta&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_5487017fb600f07e19cd5bbf43034591.setContent(html_4aaf6a34b407192b97cf8b0f90b84d81);
+            
+        
+
+        circle_marker_ebddb1b4f83b8d8ae78dd0c8ef590fa1.bindPopup(popup_5487017fb600f07e19cd5bbf43034591)
+        ;
+
+        
+    
+    
+            circle_marker_ebddb1b4f83b8d8ae78dd0c8ef590fa1.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Fatia Shitta (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9db00cc3b6c1adecdcb3798986a67b9a = L.circleMarker(
+                [6.5126584, 3.3672352],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#2ca02c", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_78c488331be9bc4bf3c76d76baedb319);
+        
+    
+        var popup_fea85591d97aec4712aa0c3c2da3dd0d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4329f4384fc9135cd9dfdd203d42556f = $(`<div id="html_4329f4384fc9135cd9dfdd203d42556f" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #2ca02c; margin-bottom: 5px;&#39;&gt;Cluster 38&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5334167&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.5127, 3.3672&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ojuelegba&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_fea85591d97aec4712aa0c3c2da3dd0d.setContent(html_4329f4384fc9135cd9dfdd203d42556f);
+            
+        
+
+        circle_marker_9db00cc3b6c1adecdcb3798986a67b9a.bindPopup(popup_fea85591d97aec4712aa0c3c2da3dd0d)
+        ;
+
+        
+    
+    
+            circle_marker_9db00cc3b6c1adecdcb3798986a67b9a.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ojuelegba (Cluster 38)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_78c488331be9bc4bf3c76d76baedb319.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_38537679e34832adb2a88c7638a7a09b = L.circleMarker(
+                [6.4891516, 3.3352159],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_f9aece8e19078fdae0b4bed3e27e45a3 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b7c50db2ffb7c0787b0a9f707c20a286 = $(`<div id="html_b7c50db2ffb7c0787b0a9f707c20a286" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1793534&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4892, 3.3352&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_f9aece8e19078fdae0b4bed3e27e45a3.setContent(html_b7c50db2ffb7c0787b0a9f707c20a286);
+            
+        
+
+        circle_marker_38537679e34832adb2a88c7638a7a09b.bindPopup(popup_f9aece8e19078fdae0b4bed3e27e45a3)
+        ;
+
+        
+    
+    
+            circle_marker_38537679e34832adb2a88c7638a7a09b.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Aguda (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_de56e0c25617a12b9c3d979517c414fb = L.circleMarker(
+                [6.4904202, 3.3346662],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_a71ee2d8c2ac42c6fe90f8a4889cd973 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_960839eae3eedc92fdf99657ccc0e2cc = $(`<div id="html_960839eae3eedc92fdf99657ccc0e2cc" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 1909713&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4904, 3.3347&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_a71ee2d8c2ac42c6fe90f8a4889cd973.setContent(html_960839eae3eedc92fdf99657ccc0e2cc);
+            
+        
+
+        circle_marker_de56e0c25617a12b9c3d979517c414fb.bindPopup(popup_a71ee2d8c2ac42c6fe90f8a4889cd973)
+        ;
+
+        
+    
+    
+            circle_marker_de56e0c25617a12b9c3d979517c414fb.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3743b6f4c934eda057ec7a8a3321f6cf = L.circleMarker(
+                [6.4924166, 3.3331288],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_ea3bb3cd07c1370fd151316fbae5ce46 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_11c5bb06069c2ff41463e136fd561a0e = $(`<div id="html_11c5bb06069c2ff41463e136fd561a0e" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5302979&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4924, 3.3331&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_ea3bb3cd07c1370fd151316fbae5ce46.setContent(html_11c5bb06069c2ff41463e136fd561a0e);
+            
+        
+
+        circle_marker_3743b6f4c934eda057ec7a8a3321f6cf.bindPopup(popup_ea3bb3cd07c1370fd151316fbae5ce46)
+        ;
+
+        
+    
+    
+            circle_marker_3743b6f4c934eda057ec7a8a3321f6cf.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_769ba7e4006dfb7c03fed6ab0b3adc66 = L.circleMarker(
+                [6.489196952786876, 3.3300693863677644],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_2578cf0805559b65680f224b455e5069 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_9eed4721a7b868dd22305feeb07a5f27 = $(`<div id="html_9eed4721a7b868dd22305feeb07a5f27" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5305063&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4892, 3.3301&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_2578cf0805559b65680f224b455e5069.setContent(html_9eed4721a7b868dd22305feeb07a5f27);
+            
+        
+
+        circle_marker_769ba7e4006dfb7c03fed6ab0b3adc66.bindPopup(popup_2578cf0805559b65680f224b455e5069)
+        ;
+
+        
+    
+    
+            circle_marker_769ba7e4006dfb7c03fed6ab0b3adc66.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_be9ff7f9076d9743711ccca77aa23e76 = L.circleMarker(
+                [6.4891631, 3.329334],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_9a29e953fab8b00b7806e2e5f9c2312f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d024f54ac56faf8d4d874f53b410279a = $(`<div id="html_d024f54ac56faf8d4d874f53b410279a" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2254823&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4892, 3.3293&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_9a29e953fab8b00b7806e2e5f9c2312f.setContent(html_d024f54ac56faf8d4d874f53b410279a);
+            
+        
+
+        circle_marker_be9ff7f9076d9743711ccca77aa23e76.bindPopup(popup_9a29e953fab8b00b7806e2e5f9c2312f)
+        ;
+
+        
+    
+    
+            circle_marker_be9ff7f9076d9743711ccca77aa23e76.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d9885a02b60f58d2d0cdea7b220f5671 = L.circleMarker(
+                [6.488777799999999, 3.3320442],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_8a51f5ec69bb9a66eb823b9fa4d0dc51 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_84b10e130cd41b8334a7706de1882ada = $(`<div id="html_84b10e130cd41b8334a7706de1882ada" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 2507641&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Lawanson&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4888, 3.3320&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Lawanson&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_8a51f5ec69bb9a66eb823b9fa4d0dc51.setContent(html_84b10e130cd41b8334a7706de1882ada);
+            
+        
+
+        circle_marker_d9885a02b60f58d2d0cdea7b220f5671.bindPopup(popup_8a51f5ec69bb9a66eb823b9fa4d0dc51)
+        ;
+
+        
+    
+    
+            circle_marker_d9885a02b60f58d2d0cdea7b220f5671.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Lawanson (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ba402f5c7fc083e102464b97301da33c = L.circleMarker(
+                [6.491124, 3.3317274],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_f0209423c25161d915f321b364e2bef1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f0b4d294ea71d7e1b2c08a745f7b2a8c = $(`<div id="html_f0b4d294ea71d7e1b2c08a745f7b2a8c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4045255&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4911, 3.3317&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_f0209423c25161d915f321b364e2bef1.setContent(html_f0b4d294ea71d7e1b2c08a745f7b2a8c);
+            
+        
+
+        circle_marker_ba402f5c7fc083e102464b97301da33c.bindPopup(popup_f0209423c25161d915f321b364e2bef1)
+        ;
+
+        
+    
+    
+            circle_marker_ba402f5c7fc083e102464b97301da33c.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e60aac7b9346424609fa53d83f8f6c10 = L.circleMarker(
+                [6.4888284215764, 3.3326768036962],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_12c3ae4db0dfe6b4a7dcf69944b90bfb = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b63b7b46050943d2eae71dec176b5f42 = $(`<div id="html_b63b7b46050943d2eae71dec176b5f42" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5305657&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4888, 3.3327&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Itire&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_12c3ae4db0dfe6b4a7dcf69944b90bfb.setContent(html_b63b7b46050943d2eae71dec176b5f42);
+            
+        
+
+        circle_marker_e60aac7b9346424609fa53d83f8f6c10.bindPopup(popup_12c3ae4db0dfe6b4a7dcf69944b90bfb)
+        ;
+
+        
+    
+    
+            circle_marker_e60aac7b9346424609fa53d83f8f6c10.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Itire (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5b4f88b399ef73d1ccb40f92169f978b = L.circleMarker(
+                [6.4877857999999, 3.3269828],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_cf3668a994ec5778868442a4c017ebe5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_32840a8c37d46d816a11ec8d908f2e8f = $(`<div id="html_32840a8c37d46d816a11ec8d908f2e8f" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3778907&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4878, 3.3270&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_cf3668a994ec5778868442a4c017ebe5.setContent(html_32840a8c37d46d816a11ec8d908f2e8f);
+            
+        
+
+        circle_marker_5b4f88b399ef73d1ccb40f92169f978b.bindPopup(popup_cf3668a994ec5778868442a4c017ebe5)
+        ;
+
+        
+    
+    
+            circle_marker_5b4f88b399ef73d1ccb40f92169f978b.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_01c7b1161291a2075f97bb12df94b735 = L.circleMarker(
+                [6.4881683, 3.3328327],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_24bdf036cf54df6a304d93f6b8f6f563 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_137b7a73d94fa18a037be61510d8a52c = $(`<div id="html_137b7a73d94fa18a037be61510d8a52c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3794463&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4882, 3.3328&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_24bdf036cf54df6a304d93f6b8f6f563.setContent(html_137b7a73d94fa18a037be61510d8a52c);
+            
+        
+
+        circle_marker_01c7b1161291a2075f97bb12df94b735.bindPopup(popup_24bdf036cf54df6a304d93f6b8f6f563)
+        ;
+
+        
+    
+    
+            circle_marker_01c7b1161291a2075f97bb12df94b735.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Aguda (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_eda91c7ffb976d9498f7ec4684420080 = L.circleMarker(
+                [6.4935918, 3.332155],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_b028c984c7ca1a8f4d917f9c1fc13093 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_db2bfeb4e90cf14768c5d1dba48728a1 = $(`<div id="html_db2bfeb4e90cf14768c5d1dba48728a1" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 4306558&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4936, 3.3322&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_b028c984c7ca1a8f4d917f9c1fc13093.setContent(html_db2bfeb4e90cf14768c5d1dba48728a1);
+            
+        
+
+        circle_marker_eda91c7ffb976d9498f7ec4684420080.bindPopup(popup_b028c984c7ca1a8f4d917f9c1fc13093)
+        ;
+
+        
+    
+    
+            circle_marker_eda91c7ffb976d9498f7ec4684420080.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c9f90e056df7a4e9ec3976f9cecbcaeb = L.circleMarker(
+                [6.488235, 3.3324505],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_c410bff9319b95521d0f3dae1f3ff17c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_dee3a7cc640629e65847763a5f47c953 = $(`<div id="html_dee3a7cc640629e65847763a5f47c953" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5240142&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4882, 3.3325&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_c410bff9319b95521d0f3dae1f3ff17c.setContent(html_dee3a7cc640629e65847763a5f47c953);
+            
+        
+
+        circle_marker_c9f90e056df7a4e9ec3976f9cecbcaeb.bindPopup(popup_c410bff9319b95521d0f3dae1f3ff17c)
+        ;
+
+        
+    
+    
+            circle_marker_c9f90e056df7a4e9ec3976f9cecbcaeb.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Aguda (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5ed07d9f521c04525d6db94a7f72374e = L.circleMarker(
+                [6.488975, 3.3328717],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_aea216349414ea6e221b1f475948d55a = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b1bf4e5d58bf52558f1e162a23928ee8 = $(`<div id="html_b1bf4e5d58bf52558f1e162a23928ee8" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3875310&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4890, 3.3329&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Aguda&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_aea216349414ea6e221b1f475948d55a.setContent(html_b1bf4e5d58bf52558f1e162a23928ee8);
+            
+        
+
+        circle_marker_5ed07d9f521c04525d6db94a7f72374e.bindPopup(popup_aea216349414ea6e221b1f475948d55a)
+        ;
+
+        
+    
+    
+            circle_marker_5ed07d9f521c04525d6db94a7f72374e.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Aguda (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7fcb08898e07e970cb0a6c16ba9441db = L.circleMarker(
+                [6.4925063, 3.3332055],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_0257617eb237554da2f53eb9ca18ce31 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a7b59d1a34a4df05d179daaacc1848cb = $(`<div id="html_a7b59d1a34a4df05d179daaacc1848cb" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5325841&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4925, 3.3332&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_0257617eb237554da2f53eb9ca18ce31.setContent(html_a7b59d1a34a4df05d179daaacc1848cb);
+            
+        
+
+        circle_marker_7fcb08898e07e970cb0a6c16ba9441db.bindPopup(popup_0257617eb237554da2f53eb9ca18ce31)
+        ;
+
+        
+    
+    
+            circle_marker_7fcb08898e07e970cb0a6c16ba9441db.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d536646b389a7534c87fd4a820b71a91 = L.circleMarker(
+                [6.4901088, 3.331953],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_c0c7ee4cfa2f60693db5a163725e6b56 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_032d63b5670782f6eaa35db937f551a6 = $(`<div id="html_032d63b5670782f6eaa35db937f551a6" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3907557&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4901, 3.3320&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_c0c7ee4cfa2f60693db5a163725e6b56.setContent(html_032d63b5670782f6eaa35db937f551a6);
+            
+        
+
+        circle_marker_d536646b389a7534c87fd4a820b71a91.bindPopup(popup_c0c7ee4cfa2f60693db5a163725e6b56)
+        ;
+
+        
+    
+    
+            circle_marker_d536646b389a7534c87fd4a820b71a91.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_21af204b8ebcb5c6a2ae85bf2e575443 = L.circleMarker(
+                [6.488042999999999, 3.3295257],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_ac95671a45f648c8b6602016e0fe991c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0e186f73305bd875c360d33e0732209b = $(`<div id="html_0e186f73305bd875c360d33e0732209b" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 3939622&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4880, 3.3295&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_ac95671a45f648c8b6602016e0fe991c.setContent(html_0e186f73305bd875c360d33e0732209b);
+            
+        
+
+        circle_marker_21af204b8ebcb5c6a2ae85bf2e575443.bindPopup(popup_ac95671a45f648c8b6602016e0fe991c)
+        ;
+
+        
+    
+    
+            circle_marker_21af204b8ebcb5c6a2ae85bf2e575443.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2312ed30d91755cf7afbc860eb7ce9ae = L.circleMarker(
+                [6.492495799999999, 3.3332218],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_ae86111de9f46432eb6f7ec9895554c2 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_c461a8565c28e3d56eff34eec06a0e1c = $(`<div id="html_c461a8565c28e3d56eff34eec06a0e1c" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5338816&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4925, 3.3332&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_ae86111de9f46432eb6f7ec9895554c2.setContent(html_c461a8565c28e3d56eff34eec06a0e1c);
+            
+        
+
+        circle_marker_2312ed30d91755cf7afbc860eb7ce9ae.bindPopup(popup_ae86111de9f46432eb6f7ec9895554c2)
+        ;
+
+        
+    
+    
+            circle_marker_2312ed30d91755cf7afbc860eb7ce9ae.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5b25b8a7951b4d17f00e79f1a26bdc42 = L.circleMarker(
+                [6.4901294, 3.3284935],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_57f427a08d1b465f8e363b7be8634c8c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4acb79abf66c2da47c2e7c92075a8c97 = $(`<div id="html_4acb79abf66c2da47c2e7c92075a8c97" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5354685&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4901, 3.3285&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_57f427a08d1b465f8e363b7be8634c8c.setContent(html_4acb79abf66c2da47c2e7c92075a8c97);
+            
+        
+
+        circle_marker_5b25b8a7951b4d17f00e79f1a26bdc42.bindPopup(popup_57f427a08d1b465f8e363b7be8634c8c)
+        ;
+
+        
+    
+    
+            circle_marker_5b25b8a7951b4d17f00e79f1a26bdc42.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7a82b7ab154902d8a3b0745a4f53db16 = L.circleMarker(
+                [6.4913564999999, 3.3309627],
+                {"bubblingMouseEvents": true, "color": "white", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ff7f0e", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 1}
+            ).addTo(feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16);
+        
+    
+        var popup_b375ec9e70e754c44921e53d5e1d3505 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d80364986d921e1db41712c903a81c76 = $(`<div id="html_d80364986d921e1db41712c903a81c76" style="width: 100.0%; height: 100.0%;">&lt;div style=&#39;font-family: Arial, sans-serif; font-size: 12px;&#39;&gt;&lt;div style=&#39;font-weight: bold; color: #ff7f0e; margin-bottom: 5px;&#39;&gt;Cluster 33&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;CustomerID:&lt;/strong&gt; 5327079&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;Coordinates:&lt;/strong&gt; 6.4914, 3.3310&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LGA:&lt;/strong&gt; Surulere&lt;/div&gt;&lt;div style=&#39;margin: 2px 0;&#39;&gt;&lt;strong&gt;LCDA:&lt;/strong&gt; Surulere - Ijesha&lt;/div&gt;&lt;/div&gt;</div>`)[0];
+                popup_b375ec9e70e754c44921e53d5e1d3505.setContent(html_d80364986d921e1db41712c903a81c76);
+            
+        
+
+        circle_marker_7a82b7ab154902d8a3b0745a4f53db16.bindPopup(popup_b375ec9e70e754c44921e53d5e1d3505)
+        ;
+
+        
+    
+    
+            circle_marker_7a82b7ab154902d8a3b0745a4f53db16.bindTooltip(
+                `<div>
+                     Surulere | Surulere - Ijesha (Cluster 33)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16.addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var layer_control_46b3d348456f5f167e7cc395deb6bb9c_layers = {
+                base_layers : {
+                    "cartodbpositron" : tile_layer_c88878307a59925d597b808aceaa86d4,
+                    "OpenStreetMap" : tile_layer_d7a5c315642c897549d2f584bfdf74eb,
+                    "Terrain" : tile_layer_8c46d48de906b1cd2e390f47bf0607fe,
+                    "Toner" : tile_layer_237b362e202dea6ad916b6a1ebf58150,
+                    "CartoDB Dark" : tile_layer_21ac88ad543039d755bdd1ff726bead3,
+                    "CartoDB Light" : tile_layer_7945acdf60fc51949d2c0660c0006d20,
+                },
+                overlays :  {
+                    "Cluster 26 - Apapa+2more - Apapa - Sari-iganmu+5more (20 points)" : feature_group_c723e45a235bc69448f4050baede5a71,
+                    "Cluster 38 - Surulere+1more - Surulere - Ojuelegba+5more (20 points)" : feature_group_78c488331be9bc4bf3c76d76baedb319,
+                    "Cluster 33 - Surulere - Surulere - Aguda+3more (19 points)" : feature_group_fa8b48ec5e483aa1e8e3111a88b6bd16,
+                },
+            };
+            let layer_control_46b3d348456f5f167e7cc395deb6bb9c = L.control.layers(
+                layer_control_46b3d348456f5f167e7cc395deb6bb9c_layers.base_layers,
+                layer_control_46b3d348456f5f167e7cc395deb6bb9c_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_73ee57075a32091bc97442f0420887a6);
+
+        
+    
+            var tile_layer_31160e39b27d4c4a53936ec4700eba02 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detect_retina": false, "max_native_zoom": 19, "max_zoom": 19, "min_zoom": 0, "no_wrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+            var mini_map_f54ff5f87d0c6c92585bf457b7fa117a = new L.Control.MiniMap(
+                tile_layer_31160e39b27d4c4a53936ec4700eba02,
+                {
+  "position": "bottomleft",
+  "width": 150,
+  "height": 150,
+  "collapsedWidth": 25,
+  "collapsedHeight": 25,
+  "zoomLevelOffset": -5,
+  "centerFixed": false,
+  "zoomAnimation": false,
+  "toggleDisplay": true,
+  "autoToggleDisplay": false,
+  "minimized": false,
+}
+            );
+            map_73ee57075a32091bc97442f0420887a6.addControl(mini_map_f54ff5f87d0c6c92585bf457b7fa117a);
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topleft",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var measure_control_baac636f9331792afb2a4faaac7da1ad = new L.Control.Measure(
+                {
+  "position": "topright",
+  "primaryLengthUnit": "meters",
+  "secondaryLengthUnit": "miles",
+  "primaryAreaUnit": "sqmeters",
+  "secondaryAreaUnit": "acres",
+});
+            map_73ee57075a32091bc97442f0420887a6.addControl(measure_control_baac636f9331792afb2a4faaac7da1ad);
+
+            // Workaround for using this plugin with Leaflet>=1.8.0
+            // https://github.com/ljagis/leaflet-measure/issues/171
+            L.Control.Measure.include({
+                _setCaptureMarkerIcon: function () {
+                    // disable autopan
+                    this._captureMarker.options.autoPanOnFocus = false;
+                    // default function
+                    this._captureMarker.setIcon(
+                        L.divIcon({
+                            iconSize: this._map.getSize().multiplyBy(2)
+                        })
+                    );
+                },
+            });
+
+        
+    
+            var mouse_position_596ac7983ec2d93e6718450e00f7bba2 = new L.Control.MousePosition(
+                {
+  "position": "bottomleft",
+  "separator": " | ",
+  "emptyString": "Move mouse to see coordinates",
+  "lngFirst": false,
+  "numDigits": 4,
+  "prefix": "Coordinates: ",
+}
+            );
+            mouse_position_596ac7983ec2d93e6718450e00f7bba2.options["latFormatter"] =
+                undefined;
+            mouse_position_596ac7983ec2d93e6718450e00f7bba2.options["lngFormatter"] =
+                undefined;
+            map_73ee57075a32091bc97442f0420887a6.addControl(mouse_position_596ac7983ec2d93e6718450e00f7bba2);
+        
+    
+            map_73ee57075a32091bc97442f0420887a6.fitBounds(
+                [[6.4608945, 3.3169828000000003], [6.5299698, 3.3775237999999996]],
+                {}
+            );
+        
+    
+            var marker_3907eab685a00cf0ede3595501eb935f = L.marker(
+                [6.473953, 3.356525],
+                {
+  "size": 10,
+}
+            ).addTo(map_73ee57075a32091bc97442f0420887a6);
+        
+    
+            var icon_1d4102455941ca61882903d7afb498c6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "home",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_3907eab685a00cf0ede3595501eb935f.bindTooltip(
+                `<div>
+                     OmniHub Apapa Lagos - CAUSEWAY
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3907eab685a00cf0ede3595501eb935f.setIcon(icon_1d4102455941ca61882903d7afb498c6);
+            
+</script>
+</html>
